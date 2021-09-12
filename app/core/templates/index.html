@@ -1,0 +1,80 @@
+{% load socialaccount %}
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+
+<style>
+    .deco-none {
+      color: inherit;
+      text-decoration: inherit;
+    }
+
+    .deco-none:link {
+      color: inherit;
+      text-decoration: inherit;
+    }
+
+    .deco-none:hover {
+      color: inherit;
+      text-decoration: inherit;
+    }
+</style>
+
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
+    <a class="navbar-brand" href="/"><i class="fas fa-check-circle"></i> Label Checker</a></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarText">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+
+      </ul>
+      <span class="navbar-text">
+        {% if user.is_authenticated %}
+              Bem-vindo, {{ user.first_name }} <a href="{% url 'logout' %}"> Logout</a>
+            {% else %}
+              <a href="{% provider_login_url 'google' %}"><i class="fab fa-google"></i> Login com email DCOMP</a>
+            {% endif %}
+      </span>
+    </div>
+  </div>
+</nav>
+
+<div class="container p-4">
+<div class="row row-cols-1 row-cols-md-4     g-4">
+    {% for project in projects %}
+
+        <div class="col">
+
+                <div class="card">
+                    <a class="deco-none" href="{% url 'detail' project.id %}">
+                    <img src="{{ project.header_image_url }}" class="card-img-top">
+                    <div class="card-body">
+                        <h5 class="card-title">{{ project.title }}</h5>
+                        <p class="card-text">{{ project.description }}</p>
+                    </div>
+                    </a>
+
+                      <div class="card-footer text-muted">
+                        {{ project.owner.username }} - {{ project.created_at }}
+                      </div>
+
+
+                </div>
+        </div>
+
+    {% endfor %}
+
+</div>
+
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js" integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/" crossorigin="anonymous"></script>
+</body>
+</html>

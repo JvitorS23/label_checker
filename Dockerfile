@@ -1,24 +1,30 @@
-FROM python:3.7-alpine
+FROM python:3.7
 MAINTAINER JvitorS23
 
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONUNBUFFERED=1
 
-COPY ./requirements.txt /requirements.txt
-RUN apk add --update --no-cache postgresql-client
-RUN apk add --update --no-cache --virtual .tmp-build-deps \
-        gcc libc-dev linux-headers postgresql-dev musl-dev zlib zlib-dev
-RUN pip install -r /requirements.txt
-RUN apk del .tmp-build-deps
-RUN apk update && apk add bash
+# Install system packages required by the application
+RUN apt-get update --yes --quiet && \
+	apt-get upgrade -y && \
+	apt-get install --yes --quiet --no-install-recommends \
+		build-essential \
+		libpq-dev \
+		libmariadbclient-dev \
+		libjpeg62-turbo-dev \
+		zlib1g-dev \
+		libwebp-dev
 
 RUN mkdir /app
 WORKDIR /app
 COPY ./app /app
 
+COPY ./requirements.txt /requirements.txt
+RUN pip install -r /requirements.txt
+
 RUN mkdir -p /vol/web/media
 RUN mkdir -p /vol/web/static
-# For security purposes (don't run app in root user)
-RUN adduser -D user
-RUN chown -R user:user /vol/
-RUN chmod -R 755 /vol/web
-USER user
+
+
+
+
+
