@@ -5,6 +5,8 @@ __pycache__/
 
 .idea
 
+pg_data
+
 # C extensions
 *.so
 

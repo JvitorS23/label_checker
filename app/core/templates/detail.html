@@ -33,14 +33,16 @@
 
     <div class="row">
 
-        <div class="col-6">
+        <div class="col-12 col-md-6">
             <h1>{{ project.title }}</h1>
             <h5><strong>Amostra: </strong>{{ sample.title }}</h5>
             <h5><strong>Rótulo: </strong>{{ sample.target }}</h5>
             <img  src="{{ sample.image_url }}" width="330px"/>
         </div>
 
-        <div class="col-3">
+        <hr class="d-xs-block d-md-none mt-3" />
+
+        <div class="col-12 col-md-3">
 
                 <p>Imagem válida?</p>
                 <label>Sim
@@ -62,7 +64,7 @@
                 <br>
                 <br>
         </div>
-        <div class="col-3" style="display: flex; align-items: center; justify-content: center">
+        <div class="col-12 col-md-3" style="display: flex; align-items: center; justify-content: center">
             <button id="btn_next" onclick="sendReview({{sample.id}})" class="btn btn-md btn-dark" disabled>Próximo</button>
         </div>
 

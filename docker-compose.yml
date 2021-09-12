@@ -1,5 +1,8 @@
 version: "3"
 
+volumes:
+  pg_data: {}
+
 services:
   db:
     image: postgres:10-alpine
@@ -10,6 +13,8 @@ services:
     ports:
       - "5432:5432"
     restart: on-failure
+    volumes:
+      - pg_data:/var/lib/postgresql/data:Z
 
   app:
     build:
