@@ -11,7 +11,7 @@ class Project(models.Model):
     description = models.CharField(max_length=255)
     title = models.CharField(max_length=255)
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
-    created_at = models.DateField(default=now())
+    created_at = models.DateField(default=now)
 
     def get_samples_done(self):
         return ObjectDetectionSample.objects.filter(

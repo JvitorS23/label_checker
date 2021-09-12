@@ -4,6 +4,7 @@ import json
 from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 import csv
 from django.db.models import Q
+from random import randint
 
 
 class RootView(TemplateView):
@@ -29,10 +30,14 @@ class ProjectDetailView(TemplateView):
         project_id = int(kwargs.get('project_id'))
         project = Project.objects.get(pk=project_id)
         context['project'] = project
-        sample = ObjectDetectionSample.objects.filter(
-            project=project, is_reviewed=False).first()
-        if sample:
-            context['sample'] = sample
+        samples = ObjectDetectionSample.objects.filter(
+            project=project, is_reviewed=False)
+        num_samples = samples.count()
+        if num_samples > 0:
+            random_index = randint(0, num_samples - 1)
+            sample = samples.all()[random_index]
+            if sample:
+                context['sample'] = sample
 
         return context
 
