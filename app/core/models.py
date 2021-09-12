@@ -13,13 +13,19 @@ class Project(models.Model):
     owner = models.ForeignKey(get_user_model(), on_delete=models.CASCADE)
     created_at = models.DateField(default=now())
 
-    def get_progress(self):
-        all_samples = ObjectDetectionSample.objects.filter(
+    def get_samples_done(self):
+        return ObjectDetectionSample.objects.filter(
+            project=self, is_reviewed=True).count()
+
+    def get_all_samples(self):
+        return ObjectDetectionSample.objects.filter(
             project=self).count()
+
+    def get_progress(self):
+        all_samples = self.get_all_samples()
         if all_samples == 0:
             return '0'
-        samples_done = ObjectDetectionSample.objects.filter(
-            project=self, is_reviewed=True).count()
+        samples_done = self.get_samples_done()
         return str(int(samples_done*100/all_samples))
 
 

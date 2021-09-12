@@ -34,6 +34,7 @@
     <div class="row">
 
         <div class="col-6">
+            <h1>{{ project.title }}</h1>
             <h5><strong>Amostra: </strong>{{ sample.title }}</h5>
             <h5><strong>Rótulo: </strong>{{ sample.target }}</h5>
             <img  src="{{ sample.image_url }}" width="330px"/>
@@ -102,7 +103,12 @@
             url: '{% url 'eval' project.id sample.id %}',
             data: JSON.stringify(data),
             success: function(response) {
-                document.location.reload(true);
+                if(response.status == 'completed'){
+                    alert('Validação do dataset concluída!')
+                    document.location.href = '/'
+                }else{
+                    document.location.reload(true);
+                }
             },
             error: function(response) {
                 alert('Erro!')

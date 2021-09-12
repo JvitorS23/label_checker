@@ -1,7 +1,7 @@
 from django.views.generic import TemplateView
 from .models import Project, ObjectDetectionSample
 import json
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, HttpResponseRedirect
 import csv
 from django.db.models import Q
 
@@ -13,7 +13,11 @@ class RootView(TemplateView):
         context = super().get_context_data(**kwargs)
         projects = Project.objects.filter(
             is_public=True, is_active=True)
-        context['projects'] = projects
+        valid_projects = []
+        for project in projects:
+            if project.get_all_samples() > 0:
+                valid_projects.append(project)
+        context['projects'] = valid_projects
         return context
 
 
@@ -29,6 +33,7 @@ class ProjectDetailView(TemplateView):
             project=project, is_reviewed=False).first()
         if sample:
             context['sample'] = sample
+
         return context
 
 
@@ -48,6 +53,11 @@ def send_review(request, *args, **kwargs):
         if request.user:
             sample.reviewer = request.user
         sample.save()
+
+        if int(project.get_progress()) == 100:
+            project.is_public = False
+            project.save()
+            return JsonResponse({'status': 'completed'})
 
         return JsonResponse({'status': 'success'})
 

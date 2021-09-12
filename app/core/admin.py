@@ -48,8 +48,8 @@ class ProjectForm(forms.ModelForm):
 
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
-    list_display = ('title', 'owner', 'get_progress', 'is_done',
-                    'get_invalid_samples')
+    list_display = ('title', 'owner', 'get_progress', 'samples_done',
+                    'all_samples', 'is_done', 'get_invalid_samples')
 
     def get_progress(self, obj):
         return f'{obj.get_progress()}%'
@@ -57,13 +57,21 @@ class ProjectAdmin(admin.ModelAdmin):
     def is_done(self, obj) -> bool:
         return int(obj.get_progress()) == 100
 
+    def samples_done(self, obj) -> int:
+        return obj.get_samples_done()
+
+    def all_samples(self, obj) -> int:
+        return obj.get_all_samples()
+
     is_done.boolean = True
     is_done.short_description = 'Done?'
     get_progress.short_description = 'Progress'
+    samples_done.short_description = 'Samples done'
+    all_samples.short_description = 'All samples'
 
     def get_invalid_samples(self, obj):
         url = reverse("invalids_csv", kwargs={'project_id': obj.id})
-        return mark_safe(f'<a target="_BLANK" href="{url}">Get invalid Samples</a>')
+        return mark_safe(f'<a target="_BLANK" href="{url}">Download</a>')
 
     get_invalid_samples.short_description = 'Get invalid samples'
     get_invalid_samples.allow_tags = True
@@ -95,4 +103,5 @@ class ProjectAdmin(admin.ModelAdmin):
 class ObjectDetectionSampleAdmin(admin.ModelAdmin):
     list_display = ('title', 'is_reviewed', 'is_correct', 'is_image_valid',
                     'reviewer')
-    list_filter = ('is_correct', 'is_image_valid', 'project__title')
+    list_filter = ('is_reviewed', 'is_correct', 'is_image_valid',
+                   'project__title')
