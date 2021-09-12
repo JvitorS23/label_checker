@@ -60,6 +60,9 @@
                         <p class="card-text">{{ project.description }}</p>
                     </div>
                     </a>
+                    <div class="progress">
+                      <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" style="width: {{ project.get_progress }}%;" aria-valuenow="{{ project.get_progress }}" aria-valuemin="0" aria-valuemax="100">{{ project.get_progress }}%</div>
+                    </div>
 
                       <div class="card-footer text-muted">
                         {{ project.owner.username }} - {{ project.created_at }}

@@ -29,12 +29,89 @@
   </div>
 </nav>
 
-<div class="container p-4">
-    <div class="row row-cols-1 row-cols-md-4 g-4">
+<div align="center" class="container p-4">
+
+    <div class="row">
+
+        <div class="col-6">
+            <h5><strong>Amostra: </strong>{{ sample.title }}</h5>
+            <h5><strong>Rótulo: </strong>{{ sample.target }}</h5>
+            <img  src="{{ sample.image_url }}" width="330px"/>
+        </div>
+
+        <div class="col-3">
+
+                <p>Imagem válida?</p>
+                <label>Sim
+                <input onchange="enableNext()" type="radio" name="image_eval" value="1" />
+                </label>
+                <label>Não
+                   <input onchange="enableNext()"  type="radio" name="image_eval" value="0" />
+                </label>
+                <br>
+                <br>
+
+                <p>Rotulação correta?</p>
+                <label>Sim
+                <input onchange="enableNext()" type="radio" name="label_eval" value="1" />
+                </label>
+                <label>Não
+                <input onchange="enableNext()" type="radio" name="label_eval" value="0" />
+                </label>
+                <br>
+                <br>
+        </div>
+        <div class="col-3" style="display: flex; align-items: center; justify-content: center">
+            <button id="btn_next" onclick="sendReview({{sample.id}})" class="btn btn-md btn-dark" disabled>Próximo</button>
+        </div>
+
 
     </div>
 
+
+    <hr>
+
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.min.js" integrity="sha384-skAcpIdS7UcVUC05LJ9Dxay8AXcDYfBJqt1CJ85S/CFujBsIzCIv+l9liuYLaMQ/" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/js-cookie/2.2.1/js.cookie.min.js" integrity="sha512-Meww2sXqNHxI1+5Dyh/9KAtvI9RZSA4c1K2k5iL02oiPO/RH3Q30L3M1albtqMg50u4gRTYdV4EXOQqXEI336A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+    function enableNext(){
+        var image_eval_checked = document.querySelector('input[name="image_eval"]:checked')
+        var label_eval_checked = document.querySelector('input[name="label_eval"]:checked')
+        if(image_eval_checked && label_eval_checked){
+            var btn_next = document.querySelector('#btn_next')
+            btn_next.disabled = false
+        }
+    }
+
+    function sendReview(sample_id){
+        var image_eval = document.querySelector('input[name="image_eval"]:checked').value
+        var label_eval = document.querySelector('input[name="label_eval"]:checked').value
+
+        data = {
+            image_is_valid: image_eval,
+            label_is_correct: label_eval,
+        }
+
+        $.ajax({
+            type: "POST",
+            headers: {
+                'X-CSRFToken': Cookies.get('csrftoken')
+            },
+            url: '{% url 'eval' project.id sample.id %}',
+            data: JSON.stringify(data),
+            success: function(response) {
+                document.location.reload(true);
+            },
+            error: function(response) {
+                alert('Erro!')
+                document.location.reload(true);
+            },
+            dataType: 'json'
+        });
+    }
+</script>
+
 </body>
 </html>
